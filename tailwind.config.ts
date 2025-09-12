@@ -57,6 +57,17 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // FALCON Alert System Colors
+        critical: "hsl(var(--critical))",
+        "high-risk": "hsl(var(--high-risk))",
+        "medium-risk": "hsl(var(--medium-risk))",
+        safe: "hsl(var(--safe))",
+        "ai-accent": "hsl(var(--ai-accent))",
+        // Status Colors
+        "status-online": "hsl(var(--status-online))",
+        "status-warning": "hsl(var(--status-warning))",
+        "status-critical": "hsl(var(--status-critical))",
+        "status-processing": "hsl(var(--status-processing))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -80,10 +91,51 @@ export default {
             height: "0",
           },
         },
+        "pulse-glow": {
+          "0%, 100%": {
+            boxShadow: "0 0 20px hsl(var(--ai-accent) / 0.3)",
+          },
+          "50%": {
+            boxShadow: "0 0 30px hsl(var(--ai-accent) / 0.6), 0 0 40px hsl(var(--ai-accent) / 0.4)",
+          },
+        },
+        "shimmer": {
+          "100%": {
+            transform: "translateX(100%)",
+          },
+        },
+        "fade-in": {
+          "0%": {
+            opacity: "0",
+            transform: "translateY(10px)",
+          },
+          "100%": {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
+        "slide-up": {
+          "0%": {
+            transform: "translateY(20px)",
+            opacity: "0",
+          },
+          "100%": {
+            transform: "translateY(0)",
+            opacity: "1",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "pulse-glow": "pulse-glow 2s ease-in-out infinite",
+        "shimmer": "shimmer 2s infinite",
+        "fade-in": "fade-in 0.3s ease-out",
+        "slide-up": "slide-up 0.4s ease-out",
+      },
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
       },
     },
   },
