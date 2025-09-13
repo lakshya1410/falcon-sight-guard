@@ -3,6 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Navbar from '@/components/Navbar';
+import MonitoringGrid from '@/components/MonitoringGrid';
+import AlertPanel from '@/components/AlertPanel';
+import SystemMetrics from '@/components/SystemMetrics';
+import PersonnelManager from '@/components/PersonnelManager';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -151,6 +155,18 @@ const Dashboard: React.FC = () => {
           ))}
         </div>
 
+        {/* Advanced Monitoring Grid */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+          <MonitoringGrid />
+          <AlertPanel />
+        </div>
+
+        {/* System Health */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
+          <SystemMetrics />
+          <PersonnelManager />
+        </div>
+
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Site Information */}
@@ -167,7 +183,7 @@ const Dashboard: React.FC = () => {
                   <Shield className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Site Name</p>
-                    <p className="text-sm text-muted-foreground">{profile?.site_name}</p>
+                    <p className="text-sm text-muted-foreground">{profile?.site_name || 'Not configured'}</p>
                   </div>
                 </div>
                 
@@ -175,7 +191,7 @@ const Dashboard: React.FC = () => {
                   <Mail className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Contact Email</p>
-                    <p className="text-sm text-muted-foreground">{profile?.email}</p>
+                    <p className="text-sm text-muted-foreground">{profile?.email || 'Not configured'}</p>
                   </div>
                 </div>
 
@@ -183,7 +199,7 @@ const Dashboard: React.FC = () => {
                   <Phone className="h-4 w-4 text-muted-foreground mt-1" />
                   <div>
                     <p className="text-sm font-medium text-foreground">Mobile</p>
-                    <p className="text-sm text-muted-foreground">{profile?.mobile_number}</p>
+                    <p className="text-sm text-muted-foreground">{profile?.mobile_number || 'Not configured'}</p>
                   </div>
                 </div>
 
@@ -206,41 +222,42 @@ const Dashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* Activity Feed */}
+          {/* Quick Actions */}
           <Card className="glass border-border/50 lg:col-span-2">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Activity className="h-5 w-5 text-primary" />
-                Recent Activity
+                <Zap className="h-5 w-5 text-primary" />
+                Quick Actions
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-start gap-4 p-3 rounded-lg bg-muted/20 border border-border/30">
-                  <div className="bg-safe/20 p-2 rounded-full">
-                    <Zap className="h-4 w-4 text-safe" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">System initialized</p>
-                    <p className="text-xs text-muted-foreground">All monitoring systems are online and functioning</p>
-                    <p className="text-xs text-muted-foreground mt-1">Just now</p>
-                  </div>
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Button variant="outline" className="flex flex-col items-center gap-2 h-auto p-4">
+                  <Shield className="h-6 w-6" />
+                  <span className="text-sm">Emergency Alert</span>
+                </Button>
+                <Button variant="outline" className="flex flex-col items-center gap-2 h-auto p-4">
+                  <Eye className="h-6 w-6" />
+                  <span className="text-sm">View All Cameras</span>  
+                </Button>
+                <Button variant="outline" className="flex flex-col items-center gap-2 h-auto p-4">
+                  <Users className="h-6 w-6" />
+                  <span className="text-sm">Contact Personnel</span>
+                </Button>
+                <Button variant="outline" className="flex flex-col items-center gap-2 h-auto p-4">
+                  <Activity className="h-6 w-6" />
+                  <span className="text-sm">System Reports</span>
+                </Button>
+              </div>
 
-                <div className="flex items-start gap-4 p-3 rounded-lg bg-muted/10 border border-border/20">
-                  <div className="bg-primary/20 p-2 rounded-full">
-                    <Shield className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">Security protocols active</p>
-                    <p className="text-xs text-muted-foreground">FALCON security systems enabled</p>
-                    <p className="text-xs text-muted-foreground mt-1">2 minutes ago</p>
-                  </div>
+              <div className="mt-6 p-4 bg-primary/10 rounded-lg border border-primary/20">
+                <div className="flex items-center gap-2 mb-2">
+                  <Shield className="h-5 w-5 text-primary" />
+                  <span className="font-medium text-primary">FALCON System Status</span>
                 </div>
-
-                <div className="flex items-center justify-center py-8">
-                  <p className="text-sm text-muted-foreground">More activity features coming soon...</p>
-                </div>
+                <p className="text-sm text-muted-foreground">
+                  All security systems operational. Last full system check: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
+                </p>
               </div>
             </CardContent>
           </Card>
