@@ -19,6 +19,7 @@ const Auth: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [emailSent, setEmailSent] = useState(false);
 
   const { signIn, signUp } = useAuth();
 
@@ -35,11 +36,16 @@ const Auth: React.FC = () => {
           mobile_number: formData.mobileNumber,
           email: formData.email,
         });
+        setEmailSent(true);
       } else {
         await signIn(formData.email, formData.password);
       }
     } catch (error: any) {
-      setError(error.message);
+      if (error.message.includes('Email not confirmed')) {
+        setError('Please check your email and click the confirmation link before signing in.');
+      } else {
+        setError(error.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -72,6 +78,15 @@ const Auth: React.FC = () => {
         </CardHeader>
 
         <CardContent className="space-y-4">
+          {emailSent && (
+            <Alert className="border-safe/50 bg-safe/10">
+              <Shield className="h-4 w-4" />
+              <AlertDescription>
+                Account created! Please check your email and click the confirmation link to complete your registration.
+              </AlertDescription>
+            </Alert>
+          )}
+          
           {error && (
             <Alert className="border-destructive/50 bg-destructive/10">
               <AlertTriangle className="h-4 w-4" />
