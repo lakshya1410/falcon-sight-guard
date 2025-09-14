@@ -28,28 +28,66 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
 
+  // Ensure a profile row exists for the signed-in user
+  const ensureProfile = async (u: User) => {
+    try {
+      const { data, error } = await (supabase as any)
+        .from('profiles')
+        .select('id')
+        .eq('user_id', u.id)
+        .single();
+
+      if (error && error.code !== 'PGRST116') {
+        console.error('Profile check failed:', error);
+        return;
+      }
+
+      if (!data) {
+        await (supabase as any)
+          .from('profiles')
+          .insert({
+            user_id: u.id,
+            full_name: u.user_metadata?.full_name || '',
+            site_name: u.user_metadata?.site_name || '',
+            email: u.email,
+            mobile_number: u.user_metadata?.mobile_number || '',
+          });
+      }
+    } catch (e) {
+      // No-op
+    }
+  };
+
   useEffect(() => {
-    // Get initial session
+    // Listen for auth changes FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
+
+      if (event === 'SIGNED_IN') {
+        toast.success('Welcome to FALCON Command Center');
+        if (session?.user) {
+          setTimeout(() => {
+            ensureProfile(session.user);
+          }, 0);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        toast.success('Signed out successfully');
+      }
+    });
+
+    // Then get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-
-        if (event === 'SIGNED_IN') {
-          toast.success('Welcome to FALCON Command Center');
-        } else if (event === 'SIGNED_OUT') {
-          toast.success('Signed out successfully');
-        }
+      if (session?.user) {
+        setTimeout(() => {
+          ensureProfile(session.user);
+        }, 0);
       }
-    );
+    });
 
     return () => subscription.unsubscribe();
   }, []);
