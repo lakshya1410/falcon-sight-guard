@@ -26,8 +26,8 @@ interface Profile {
   site_name: string;
   email: string;
   mobile_number: string;
-  site_latitude?: number;
-  site_longitude?: number;
+  site_latitude?: number | string;
+  site_longitude?: number | string;
 }
 
 const Dashboard: React.FC = () => {
@@ -203,13 +203,13 @@ const Dashboard: React.FC = () => {
                   </div>
                 </div>
 
-                {(profile?.site_latitude && profile?.site_longitude) && (
+                {Number.isFinite(Number(profile?.site_latitude)) && Number.isFinite(Number(profile?.site_longitude)) && (
                   <div className="flex items-start gap-3">
                     <MapPin className="h-4 w-4 text-muted-foreground mt-1" />
                     <div>
                       <p className="text-sm font-medium text-foreground">Coordinates</p>
                       <p className="text-sm text-muted-foreground">
-                        {profile.site_latitude.toFixed(6)}, {profile.site_longitude.toFixed(6)}
+                        {Number(profile?.site_latitude).toFixed(6)}, {Number(profile?.site_longitude).toFixed(6)}
                       </p>
                     </div>
                   </div>
